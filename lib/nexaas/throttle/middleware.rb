@@ -1,5 +1,5 @@
 require "rack/attack"
-require "redis-rails"
+require "redis-activesupport"
 
 class Rack::Attack
   def self.configuration
