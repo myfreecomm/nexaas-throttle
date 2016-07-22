@@ -38,7 +38,7 @@ module Nexaas
 
       def check!
         instance_variables.each do |ivar|
-          fail "You must provide a `#{ivar}` configuration." if ivar.nil?
+          raise ArgumentError, "You must provide a `#{ivar}` configuration." if instance_variable_get(ivar).blank?
         end
       end
 

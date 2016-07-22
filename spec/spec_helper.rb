@@ -29,10 +29,4 @@ Nexaas::Throttle.configure do |config|
   }
 end
 
-
-class DummyApp < Rails::Application
-  config.eager_load = false
-  config.active_support.test_order = :sorted
-end
-
-Rails.application.initialize!
+require "support/dummy_app"
