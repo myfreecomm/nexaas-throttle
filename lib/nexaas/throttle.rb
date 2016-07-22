@@ -12,10 +12,5 @@ module Nexaas
     def self.configure
       yield(configuration) if block_given?
     end
-
-    def self.control!(request)
-      controller = Controller.new(request)
-      controller.evaluate!(configuration.session_identifier)
-    end
   end
 end
