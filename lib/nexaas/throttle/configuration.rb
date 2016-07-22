@@ -6,7 +6,7 @@ module Nexaas
       # @return [Integer]
       attr_accessor :period
 
-      # How many requests a consumer can do until he starts being throttled.
+      # How many requests a consumer can do during a window until he starts being throttled.
       # Example: 60
       # @return [Integer]
       attr_accessor :limit

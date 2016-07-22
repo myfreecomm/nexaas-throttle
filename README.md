@@ -1,10 +1,10 @@
-# nexaas-throttle
+# Nexaas::Throttle
 
-Common code for HTTP access limiting for Nexaas Ruby apps
+[![Build Status](https://travis-ci.org/myfreecomm/nexaas-throttle.svg?branch=master)](https://travis-ci.org/myfreecomm/nexaas-throttle)
+[![Test Coverage](https://codeclimate.com/github/myfreecomm/nexaas-throttle/badges/coverage.svg)](https://codeclimate.com/github/myfreecomm/nexaas-throttle/coverage)
+[![Code Climate](https://codeclimate.com/github/myfreecomm/nexaas-throttle/badges/gpa.svg)](https://codeclimate.com/github/myfreecomm/nexaas-throttle)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/nexaas-throttle`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+A configurable Rails engine that provides a common way of reducing API abuse, throttling consumers' requests and blocking undesired pentesters and robots.
 
 ## Installation
 
@@ -24,7 +24,87 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+In a Rails initializer file such as `config/initializers/nexaas_throttle.rb`, put something like this:
+
+```ruby
+require "nexaas/throttle"
+
+Nexaas::Throttle.configure do |config|
+  config.period = 1.minute
+
+  config.limit = 2
+
+  config.session_identifier = SessionIdentifier
+
+  config.redis_options = {
+    host: "localhost",
+    port: 6379,
+    db: 0,
+    namespace: "nexaas:throttle"
+  }
+end
+```
+
+### Configuration
+
+<table>
+  <tr>
+    <th>Configuration</th>
+    <th>Description</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><code>period</code></td>
+    <td>The size of the throttle window.</td>
+    <td>1 minute</td>
+  </tr>
+  <tr>
+    <td><code>limit</code></td>
+    <td>How many requests a consumer can do during a window until he starts being throttled.</td>
+    <td>60 requests</td>
+  </tr>
+  <tr>
+    <td><code>session_identifier</code></td>
+    <td>The class that will handle session identification. See <a href="#session-identification">Session Identification</a> for more details.</td>
+    <td><code>nil</code></td>
+  </tr>
+  <tr>
+    <td><code>redis_options</code></td>
+    <td>Redis hash configuration where requests counters are persisted.</td>
+    <td>
+      <pre>
+{
+  host: "localhost",
+  port: 6379,
+  db: 0,
+  namespace: "nexaas:throttle"
+}
+      </pre>
+    </td>
+  </tr>
+</table>
+
+### Session Identification
+
+`Nexaas::Throttle` doesn't know how to identify a consumer. Some applications might rely on request IP, others on an API TOKEN. You must provide a way of getting an unique token
+that identify a request consumer.
+
+`Nexaas::Throttle` do this by providing a configuration `session_identifier`, a class where your application would keep the logic that identifies a consumer. This class must have the following
+interface:
+
+```ruby
+class MySessionIdentifier
+  def initialize(request)
+    @request = request
+  end
+
+  def token
+    @request.ip
+    # or @request.env["HTTP_AUTHORIZATION"]
+    # or User.find_by(token: @request.params[:token])
+  end
+end
+```
 
 ## Development
 
