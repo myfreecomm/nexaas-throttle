@@ -5,12 +5,13 @@ require "nexaas/throttle/controller"
 
 module Nexaas
   module Throttle
-    def self.configuration
-      @configuration ||=  Configuration.new
-    end
-
     def self.configure
       yield(configuration) if block_given?
+      configuration.check!
+    end
+
+    def self.configuration
+      @configuration ||=  Configuration.new
     end
   end
 end
