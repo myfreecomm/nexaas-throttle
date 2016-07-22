@@ -1,0 +1,27 @@
+Metrics/LineLength:
+  StyleGuide: "https://github.com/bbatsov/ruby-style-guide#80-character-limits"
+  Max: 120
+
+Style/Alias:
+  EnforcedStyle: "prefer_alias_method"
+
+Style/AsciiComments:
+  StyleGuide: "https://github.com/bbatsov/ruby-style-guide#english-comments"
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/DotPosition:
+  EnforcedStyle: trailing
+
+Style/ParallelAssignment:
+  StyleGuide: "https://github.com/bbatsov/ruby-style-guide#parallel-assignment"
+  Enabled: false
+
+Style/SpaceAroundEqualsInParameterDefault:
+  EnforcedStyle: space
+
+Style/StringLiterals:
+  StyleGuide: "https://github.com/bbatsov/ruby-style-guide#consistent-string-literals"
+  EnforcedStyle: double_quotes
