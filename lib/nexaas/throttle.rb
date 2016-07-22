@@ -11,7 +11,7 @@ module Nexaas
     end
 
     def self.configuration
-      @configuration ||=  Configuration.new
+      @configuration ||= Configuration.new
     end
   end
 end

@@ -1,3 +1,7 @@
+AllCops:
+  Exclude:
+    - "nexaas-throttle.gemspec"
+
 Metrics/LineLength:
   StyleGuide: "https://github.com/bbatsov/ruby-style-guide#80-character-limits"
   Max: 120
