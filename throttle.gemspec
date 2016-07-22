@@ -9,15 +9,15 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Wanderson Policarpo"]
   spec.email         = ["wanderson.policarpo@myfreecomm.com.br"]
 
-  spec.summary       = %q{Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{Write a longer description or delete this line.}
+  spec.summary       = %q{A tiny engine to allow throttling and blacklisting requests.}
+  spec.description   = %q{A tiny engine to allow throttling and blacklisting requests.}
   spec.homepage      = "https://nexaas.com"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the "allowed_push_host"
   # to allow pushing to a single host or delete this section to allow pushing to any host.
   if spec.respond_to?(:metadata)
-    spec.metadata["allowed_push_host"] = "TODO: Set to http://mygemserver.com"
+    spec.metadata["allowed_push_host"] = "https://rubygems.org"
   else
     raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
   end
@@ -32,5 +32,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.0"
 
   spec.add_dependency "rack-attack", "~> 4.4"
+  spec.add_dependency "rack-attack-rate-limit", "~> 1.1"
   spec.add_dependency "redis-rails"
 end
