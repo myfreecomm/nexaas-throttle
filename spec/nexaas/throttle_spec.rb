@@ -5,7 +5,9 @@ describe Nexaas::Throttle do
     expect(Nexaas::Throttle::VERSION).not_to be nil
   end
 
-  it "does something useful" do
-    expect(false).to eq(true)
+  describe ".configuration" do
+  end
+
+  describe ".configure" do
   end
 end
