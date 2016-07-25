@@ -1,5 +1,6 @@
-require "rack/attack"
 require "redis-activesupport"
+require "rack/attack"
+require "rack/attack/rate-limit"
 
 module Rack
   class Attack
@@ -22,7 +23,7 @@ module Rack
       [429, throttled_headers(env), ["Retry later\n"]]
     end
 
-    throttle("nexass/throttle", limit: configuration.limit, period: configuration.period) do |request|
+    throttle("nexaas/throttle", limit: configuration.limit, period: configuration.period) do |request|
       controller = Nexaas::Throttle::Controller.new(request)
       controller.evaluate!(configuration.request_identifier)
     end
@@ -31,6 +32,16 @@ end
 
 module Nexaas
   module Throttle
-    Middleware = ::Rack::Attack
+    class Middleware
+      def initialize(app)
+        @app = app
+      end
+
+      def call(env)
+        status, headers, body = Rack::Attack.new(@app).call(env)
+        _, rate_limit_headers, _  = Rack::Attack::RateLimit.new(@app, throttle: "nexaas/throttle").call(env)
+        [status, headers.merge(rate_limit_headers), body]
+      end
+    end
   end
 end

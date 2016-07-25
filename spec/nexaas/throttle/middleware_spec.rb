@@ -12,17 +12,26 @@ describe Nexaas::Throttle::Middleware do
 
   let(:configuration) { Nexaas::Throttle.configuration }
 
-  describe ".configuration" do
-    it "returns Nexaas::Throttle::Configuration" do
-      expect(described_class.configuration).to be(configuration)
-    end
-  end
-
-  describe "nexass/throttle" do
+  describe "nexaas/throttle" do
     context "json" do
       it "throttles json requests" do
         3.times { get "/hello/world", {}, {"Content-Type" => "application/json"} }
         expect(last_response.status).to eq(429)
+      end
+
+      it "adds Retry-After header" do
+        3.times { get "/hello/world", {}, {"Content-Type" => "application/json"} }
+        expect(last_response.headers["Retry-After"]).to eq("60")
+      end
+
+      it "adds X-RateLimit-Limit" do
+        2.times { get "/hello/world", {}, {"Content-Type" => "application/json"} }
+        expect(last_response.headers["X-RateLimit-Limit"]).to eq("2")
+      end
+
+      it "adds X-RateLimit-Remaining" do
+        1.times { get "/hello/world", {}, {"Content-Type" => "application/json"} }
+        expect(last_response.headers["X-RateLimit-Remaining"]).to eq("1")
       end
     end
 
@@ -31,12 +40,27 @@ describe Nexaas::Throttle::Middleware do
         3.times { get "/hello/world", {}, {"Content-Type" => "application/xml"} }
         expect(last_response.status).to eq(429)
       end
+
+      it "adds Retry-After header" do
+        3.times { get "/hello/world", {}, {"Content-Type" => "application/xml"} }
+        expect(last_response.headers["Retry-After"]).to eq("60")
+      end
+
+      it "adds X-RateLimit-Limit" do
+        2.times { get "/hello/world", {}, {"Content-Type" => "application/xml"} }
+        expect(last_response.headers["X-RateLimit-Limit"]).to eq("2")
+      end
+
+      it "adds X-RateLimit-Remaining" do
+        1.times { get "/hello/world", {}, {"Content-Type" => "application/xml"} }
+        expect(last_response.headers["X-RateLimit-Remaining"]).to eq("1")
+      end
     end
 
     context "web" do
       it "does not throttle web requests" do
         3.times { get "/hello/world" }
-        expect(last_response.status).to eq(200)
+        expect(last_response.status).not_to eq(429)
       end
     end
 
