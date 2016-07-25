@@ -4,29 +4,14 @@ require "simplecov"
 CodeClimate::TestReporter.start
 SimpleCov.start
 
+ENV["RAILS_ENV"] ||= "test"
+
 require "bundler/setup"
+
+require "rack/test"
 require "rails"
-require "nexaas/throttle"
+require "action_controller/railtie"
 
-Nexaas::Throttle.configure do |config|
-  config.period = 1.minute
-
-  config.limit = 2
-
-  config.session_identifier = Class.new do
-    def initialize(request)
-      @request = request
-    end
-
-    def token
-      @request.token
-    end
-  end
-
-  config.redis_options = {
-    host: "localhost",
-    port: 6379
-  }
-end
-
+require "rspec/rails"
+require "support/throttle_config"
 require "support/dummy_app"

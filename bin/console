@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
 
 require "bundler/setup"
-require "rails"
+require "rails/all"
 require "nexaas/throttle"
+
 require_relative "../spec/support/dummy_app"
 
 # You can add fixtures and/or initialization code here to make experimenting

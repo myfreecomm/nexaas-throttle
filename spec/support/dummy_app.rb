@@ -3,4 +3,5 @@ class DummyApp < Rails::Application
   config.active_support.test_order = :sorted
 end
 
-Rails.application.initialize!
+DummyApp.secrets.secret_key_base = "fake-my-secret"
+DummyApp.initialize!

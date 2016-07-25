@@ -19,7 +19,8 @@ module Nexaas
       end
 
       def api?
-        %W(application/json application/xml).include?(@request.media_type.to_s)
+        content_type = (@request.media_type || @request.env["Content-Type"]).to_s
+        %W(application/json application/xml).include?(content_type)
       end
     end
   end
