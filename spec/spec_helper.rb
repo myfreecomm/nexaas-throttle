@@ -7,6 +7,7 @@ SimpleCov.start
 ENV["RAILS_ENV"] ||= "test"
 
 require "bundler/setup"
+require "fakeredis/rspec"
 
 require "rack/test"
 require "rails"
