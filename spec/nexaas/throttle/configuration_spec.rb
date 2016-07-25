@@ -12,8 +12,8 @@ describe Nexaas::Throttle::Configuration do
       expect(configuration.limit).to eq(60)
     end
 
-    it "initializes @session_identifier" do
-      expect(configuration.session_identifier).to be_nil
+    it "initializes @request_identifier" do
+      expect(configuration.request_identifier).to be_nil
     end
 
     it "initializes @redis_options" do
@@ -37,8 +37,8 @@ describe Nexaas::Throttle::Configuration do
       expect { configuration.check! }.to raise_error(ArgumentError)
     end
 
-    it "requires session_identifier to be configured" do
-      configuration.session_identifier = nil
+    it "requires request_identifier to be configured" do
+      configuration.request_identifier = nil
       expect { configuration.check! }.to raise_error(ArgumentError)
     end
 

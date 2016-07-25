@@ -7,9 +7,9 @@ module Nexaas
         @request = request
       end
 
-      def evaluate!(session_identifier)
+      def evaluate!(request_identifier)
         return if assets? || !api?
-        session_identifier.new(@request).token
+        request_identifier.new(@request).token
       end
 
       private

@@ -34,7 +34,7 @@ Nexaas::Throttle.configure do |config|
 
   config.limit = 2
 
-  config.session_identifier = SessionIdentifier
+  config.request_identifier = MyRequestIdentifier
 
   config.redis_options = {
     host: "localhost",
@@ -49,7 +49,7 @@ end
 
 <table>
   <tr>
-    <th>Configuration</th>
+    <th>Option</th>
     <th>Description</th>
     <th>Default</th>
   </tr>
@@ -64,8 +64,8 @@ end
     <td>60 requests</td>
   </tr>
   <tr>
-    <td><code>session_identifier</code></td>
-    <td>The class that will handle session identification. See <a href="#session-identification">Session Identification</a> for more details.</td>
+    <td><code>request_identifier</code></td>
+    <td>The class that will handle request identification. See <a href="#request-identification">Request Identification</a> for more details.</td>
     <td><code>nil</code></td>
   </tr>
   <tr>
@@ -84,16 +84,16 @@ end
   </tr>
 </table>
 
-### Session Identification
+### Request Identification
 
 `Nexaas::Throttle` doesn't know how to identify a consumer. Some applications might rely on request IP, others on an API TOKEN. You must provide a way of getting an unique token
 that identify a request consumer.
 
-`Nexaas::Throttle` do this by providing a configuration `session_identifier`, a class where your application would keep the logic that identifies a consumer. This class must have the following
+`Nexaas::Throttle` do this by providing a configuration `request_identifier`, a class where your application would keep the logic that identifies a consumer. This class must have the following
 interface:
 
 ```ruby
-class MySessionIdentifier
+class MyRequestIdentifier
   def initialize(request)
     @request = request
   end
@@ -102,6 +102,7 @@ class MySessionIdentifier
     @request.ip
     # or @request.env["HTTP_AUTHORIZATION"]
     # or User.find_by(token: @request.params[:token])
+    # or Cache.read(@request.params[:token])
   end
 end
 ```

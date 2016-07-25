@@ -24,7 +24,7 @@ module Rack
 
     throttle("nexass/throttle", limit: configuration.limit, period: configuration.period) do |request|
       controller = Nexaas::Throttle::Controller.new(request)
-      controller.evaluate!(configuration.session_identifier)
+      controller.evaluate!(configuration.request_identifier)
     end
   end
 end

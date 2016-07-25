@@ -11,15 +11,15 @@ module Nexaas
       # @return [Integer]
       attr_accessor :limit
 
-      # The class that will handle session identification.
+      # The class that will handle request identification.
       # Each application handle with different domains on identifying a request,
       # so they have to provide information on who is the requester based on their domain.
       # This class MUST have the following interface:
-      # MySessionIdentifier#initialize(request)
-      # MySessionIdentifier#token
-      # Where MySessionIdentifier#token must be a UNIQUE identifier from the requester.
+      # MyRequestIdentifier#initialize(request)
+      # MyRequestIdentifier#token
+      # Where MyRequestIdentifier#token must be a UNIQUE identifier from the requester.
       # @return [Class]
-      attr_accessor :session_identifier
+      attr_accessor :request_identifier
 
       # Redis hash configuration with the following default values:
       #   - host      => localhost
@@ -32,7 +32,7 @@ module Nexaas
       def initialize
         @period = 1.minute
         @limit = 60
-        @session_identifier = nil
+        @request_identifier = nil
         @redis_options = default_redis_options
       end
 
@@ -43,6 +43,7 @@ module Nexaas
       end
 
       def redis_options=(options)
+        options ||= {}
         @redis_options = default_redis_options.merge(options)
       end
 

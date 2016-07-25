@@ -5,7 +5,7 @@ Nexaas::Throttle.configure do |config|
 
   config.limit = 2
 
-  config.session_identifier = Class.new do
+  config.request_identifier = Class.new do
     def initialize(request)
       @request = request
     end
