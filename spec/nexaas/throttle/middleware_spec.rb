@@ -6,7 +6,7 @@ describe Nexaas::Throttle::Middleware do
   def app
     Rack::Builder.new {
       use Nexaas::Throttle::Middleware
-      run lambda {|env| [200, {}, ["It works!"]]}
+      run lambda { |env| [200, {}, ["It works!"]] }
     }.to_app
   end
 
@@ -33,6 +33,12 @@ describe Nexaas::Throttle::Middleware do
         1.times { get "/hello/world", {}, {"Content-Type" => "application/json"} }
         expect(last_response.headers["X-RateLimit-Remaining"]).to eq("1")
       end
+
+      it "adds X-RateLimit-Reset" do
+        allow(Time).to receive(:now).and_return("2016-08-04 15:50:00 UTC".to_time(:utc))
+        1.times { get "/hello/world", {}, {"Content-Type" => "application/json"} }
+        expect(last_response.headers["X-RateLimit-Reset"]).to eq("2016-08-04T15:51:00Z")
+      end
     end
 
     context "xml" do
@@ -54,6 +60,12 @@ describe Nexaas::Throttle::Middleware do
       it "adds X-RateLimit-Remaining" do
         1.times { get "/hello/world", {}, {"Content-Type" => "application/xml"} }
         expect(last_response.headers["X-RateLimit-Remaining"]).to eq("1")
+      end
+
+      it "adds X-RateLimit-Reset" do
+        allow(Time).to receive(:now).and_return("2016-08-04 15:50:00 UTC".to_time(:utc))
+        1.times { get "/hello/world", {}, {"Content-Type" => "application/xml"} }
+        expect(last_response.headers["X-RateLimit-Reset"]).to eq("2016-08-04T15:51:00Z")
       end
     end
 

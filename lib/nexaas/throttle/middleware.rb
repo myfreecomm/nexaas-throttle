@@ -39,8 +39,29 @@ module Nexaas
 
       def call(env)
         status, headers, body = Rack::Attack.new(@app).call(env)
-        _, rate_limit_headers, _  = Rack::Attack::RateLimit.new(@app, throttle: "nexaas/throttle").call(env)
-        [status, headers.merge(rate_limit_headers), body]
+        headers.merge!(rate_limit_headers(env))
+        [status, headers, body]
+      end
+
+      private
+
+      def rate_limit_headers(env)
+        _, headers, _  = Rack::Attack::RateLimit.new(@app, throttle: "nexaas/throttle").call(env)
+        headers.merge(reset_header(env))
+      end
+
+      def reset_header(env)
+        limit_data = limit_data(env)
+        period = limit_data[:period]
+        return {} if period.nil?
+        now = Time.now.utc
+        { "X-RateLimit-Reset" => (now + (period - now.to_i % period)).iso8601.to_s }
+      end
+
+      def limit_data(env)
+        data = env["rack.attack.match_data"]
+        data ||= (env["rack.attack.throttle_data"] || {})["nexaas/throttle"]
+        data || {}
       end
     end
   end
