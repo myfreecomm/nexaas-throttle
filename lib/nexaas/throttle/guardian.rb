@@ -20,7 +20,7 @@ module Nexaas
 
       attr_reader :request, :token
 
-      def validate(&block)
+      def validate
         return if assets? || !api? || token.blank?
         request.env["nexaas.token"] = token
         yield if block_given?
@@ -32,7 +32,7 @@ module Nexaas
 
       def api?
         content_type = (request.media_type || request.env["Content-Type"]).to_s
-        %W(application/json application/xml).include?(content_type)
+        %w(application/json application/xml).include?(content_type)
       end
     end
   end

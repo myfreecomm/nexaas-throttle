@@ -22,7 +22,7 @@ module Rack
       Nexaas::Throttle::Guardian.new(request, configuration.request_identifier)
     end
 
-    self.cache.store = ActiveSupport::Cache::RedisStore.new(configuration.redis_options)
+    cache.store = ActiveSupport::Cache::RedisStore.new(configuration.redis_options)
     self.throttled_response = lambda do |env|
       [429, throttled_headers(env), ["Retry later\n"]]
     end
@@ -53,7 +53,7 @@ module Nexaas
       private
 
       def rate_limit_headers(env)
-        _, headers, _  = Rack::Attack::RateLimit.new(@app, throttle: "nexaas/throttle").call(env)
+        _, headers = Rack::Attack::RateLimit.new(@app, throttle: "nexaas/throttle").call(env)
         headers.merge(reset_header(env))
       end
 
