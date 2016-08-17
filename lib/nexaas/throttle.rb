@@ -1,7 +1,7 @@
 require "nexaas/throttle/version"
 require "nexaas/throttle/configuration"
 require "nexaas/throttle/engine"
-require "nexaas/throttle/controller"
+require "nexaas/throttle/guardian"
 
 module Nexaas
   module Throttle

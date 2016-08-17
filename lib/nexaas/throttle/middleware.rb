@@ -18,14 +18,21 @@ module Rack
       }
     end
 
+    def self.guardian(request)
+      Nexaas::Throttle::Guardian.new(request, configuration.request_identifier)
+    end
+
     self.cache.store = ActiveSupport::Cache::RedisStore.new(configuration.redis_options)
     self.throttled_response = lambda do |env|
       [429, throttled_headers(env), ["Retry later\n"]]
     end
 
     throttle("nexaas/throttle", limit: configuration.limit, period: configuration.period) do |request|
-      controller = Nexaas::Throttle::Controller.new(request)
-      controller.evaluate!(configuration.request_identifier)
+      guardian(request).throttle!
+    end
+
+    track("nexaas/track") do |request|
+      guardian(request).track!
     end
   end
 end
