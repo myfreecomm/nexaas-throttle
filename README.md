@@ -30,12 +30,11 @@ In a Rails initializer file such as `config/initializers/nexaas_throttle.rb`, pu
 require "nexaas/throttle"
 
 Nexaas::Throttle.configure do |config|
+  config.throttle = true
+  config.track = true
   config.period = 1.minute
-
   config.limit = 2
-
   config.request_identifier = MyRequestIdentifier
-
   config.redis_options = {
     host: "localhost",
     port: 6379,
@@ -54,14 +53,24 @@ end
     <th>Default</th>
   </tr>
   <tr>
+    <td><code>throttle</code></td>
+    <td>Whether or not requests are throttled.</td>
+    <td><code>true</code></td>
+  </tr>
+  <tr>
+    <td><code>track</code></td>
+    <td>Whether or not requests are tracked.</td>
+    <td><code>true</code></td>
+  </tr>
+  <tr>
     <td><code>period</code></td>
     <td>The size of the throttle window.</td>
-    <td>1 minute</td>
+    <td><code>1 minute</code></td>
   </tr>
   <tr>
     <td><code>limit</code></td>
     <td>How many requests a consumer can do during a window until he starts being throttled.</td>
-    <td>60 requests</td>
+    <td><code>60 requests</code></td>
   </tr>
   <tr>
     <td><code>request_identifier</code></td>
@@ -106,6 +115,21 @@ class MyRequestIdentifier
   end
 end
 ```
+
+### Tracking requests
+
+In order to track your requests, you must subscribe to a event triggered by `Rack::Attack` gem as below:
+
+```ruby
+ActiveSupport::Notifications.subscribe("rack.attack") do |name, start, finish, request_id, request|
+  if request.env["rack.attack.matched"] == "nexaas/track" && request.env["rack.attack.match_type"] == :track
+    # Put your tracking logic here
+    # You can use request.env["nexaas.token"] to obtain the token provided by your request_identifier
+  end
+end
+```
+
+If you want, you can access the request token by inspecting `request.env["nexaas.token"]`. This is the token your `request_identifier` provided after evaluating the request.
 
 ## Development
 

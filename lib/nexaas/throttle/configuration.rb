@@ -1,6 +1,14 @@
 module Nexaas
   module Throttle
     class Configuration
+      # Whether or not requests are throttled.
+      # @return [Boolean]
+      attr_accessor :throttle
+
+      # Whether or not requests are tracked.
+      # @return [Boolean]
+      attr_accessor :track
+
       # The size of the throttle window.
       # Example: 1.minute, 1.hour, 60(s)
       # @return [Integer]
@@ -29,7 +37,12 @@ module Nexaas
       # @return [Hash]
       attr_reader :redis_options
 
+      alias_method :throttleable?, :throttle
+      alias_method :trackable?, :track
+
       def initialize
+        @throttle = true
+        @track = true
         @period = 1.minute
         @limit = 60
         @request_identifier = nil
@@ -37,8 +50,8 @@ module Nexaas
       end
 
       def check!
-        instance_variables.each do |ivar|
-          raise ArgumentError, "You must provide a `#{ivar}` configuration." if instance_variable_get(ivar).blank?
+        required_options.each do |option|
+          raise ArgumentError, "You must provide a `#{option}` configuration." if send(option).blank?
         end
       end
 
@@ -48,6 +61,10 @@ module Nexaas
       end
 
       private
+
+      def required_options
+        %w(period limit request_identifier redis_options)
+      end
 
       def default_redis_options
         {

@@ -28,11 +28,11 @@ module Rack
     end
 
     throttle("nexaas/throttle", limit: configuration.limit, period: configuration.period) do |request|
-      guardian(request).throttle!
+      guardian(request).throttle! if configuration.throttleable?
     end
 
     track("nexaas/track") do |request|
-      guardian(request).track!
+      configuration.trackable? && guardian(request).track!
     end
   end
 end

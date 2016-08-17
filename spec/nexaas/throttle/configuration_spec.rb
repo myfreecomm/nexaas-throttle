@@ -4,6 +4,14 @@ describe Nexaas::Throttle::Configuration do
   let(:configuration) { described_class.new }
 
   describe ".new" do
+    it "initializes @throttle" do
+      expect(configuration.throttle).to be_truthy
+    end
+
+    it "initializes @track" do
+      expect(configuration.track).to be_truthy
+    end
+
     it "initializes @period" do
       expect(configuration.period).to eq(1.minute)
     end
@@ -23,6 +31,30 @@ describe Nexaas::Throttle::Configuration do
         db: 0,
         namespace: "nexaas:throttle"
       )
+    end
+  end
+
+  describe "#throttleable?" do
+    it "returns true when requests are throttleable" do
+      configuration.throttle = true
+      expect(configuration.throttleable?).to be_truthy
+    end
+
+    it "returns false when requests are not throttleable" do
+      configuration.throttle = false
+      expect(configuration.throttleable?).to be_falsey
+    end
+  end
+
+  describe "#trackable?" do
+    it "returns true when requests are trackable" do
+      configuration.track = true
+      expect(configuration.trackable?).to be_truthy
+    end
+
+    it "returns false when requests are not trackable" do
+      configuration.track = false
+      expect(configuration.trackable?).to be_falsey
     end
   end
 
