@@ -1,6 +1,5 @@
 require "redis-activesupport"
 require "rack/attack"
-require "rack/attack/rate-limit"
 
 module Rack
   class Attack
@@ -46,29 +45,51 @@ module Nexaas
 
       def call(env)
         status, headers, body = Rack::Attack.new(@app).call(env)
-        headers.merge!(rate_limit_headers(env))
+        headers.merge!(rate_limit_headers(env)) if rate_limit_available?(env)
         [status, headers, body]
       end
 
       private
 
-      def rate_limit_headers(env)
-        _, headers = Rack::Attack::RateLimit.new(@app, throttle: "nexaas/throttle").call(env)
-        headers.merge(reset_header(env))
+      def rack_attack_key
+        "rack.attack.throttle_data"
       end
 
-      def reset_header(env)
-        limit_data = limit_data(env)
-        period = limit_data[:period]
-        return {} if period.nil?
-        now = Time.now.utc
-        { "X-RateLimit-Reset" => (now + (period - now.to_i % period)).iso8601.to_s }
+      def rate_limit_available?(env)
+        env.key?(rack_attack_key) && env[rack_attack_key].key?("nexaas/throttle")
+      end
+
+      def rate_limit_headers(env)
+        data = limit_data(env)
+        return {} if data[:period].nil?
+
+        {
+          "X-RateLimit-Limit" => limit(data),
+          "X-RateLimit-Reset" => reset(data),
+          "X-RateLimit-Remaining" => remaining(data)
+        }
       end
 
       def limit_data(env)
         data = env["rack.attack.match_data"]
         data ||= (env["rack.attack.throttle_data"] || {})["nexaas/throttle"]
         data || {}
+      end
+
+      def limit(limit_data)
+        limit_data[:limit].to_s
+      end
+
+      def reset(limit_data)
+        now = Time.now.utc
+        period = limit_data[:period]
+        (now + (period - now.to_i % period)).iso8601.to_s
+      end
+
+      def remaining(limit_data)
+        remaining = limit_data[:limit].to_i - limit_data[:count].to_i
+        remaining = 0 if remaining < 0
+        remaining.to_s
       end
     end
   end

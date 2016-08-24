@@ -36,6 +36,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "simplecov", "~> 0.12"
 
   spec.add_dependency "rack-attack", "~> 4.4"
-  spec.add_dependency "rack-attack-rate-limit", "~> 1.1"
   spec.add_dependency "redis-activesupport", "~> 5.0"
 end
