@@ -101,8 +101,13 @@ describe Nexaas::Throttle::Middleware do
     end
 
     context "assets" do
-      it "does not throttle assets requests" do
+      it "does not throttle assets requests paths" do
         3.times { get "/assets/image.png" }
+        expect(last_response.status).not_to eq(429)
+      end
+
+      it "does not throttle assets requests files" do
+        3.times { get "/some/image.png" }
         expect(last_response.status).not_to eq(429)
       end
     end
@@ -164,9 +169,14 @@ describe Nexaas::Throttle::Middleware do
     end
 
     context "assets" do
-      it "does not track assets requests" do
+      it "does not track assets requests paths" do
         3.times { get "/assets/image.png" }
         expect(counter).not_to have_received(:inc)
+      end
+
+      it "does not throttle assets requests files" do
+        3.times { get "/some/image.png" }
+        expect(last_response.status).not_to eq(429)
       end
     end
   end

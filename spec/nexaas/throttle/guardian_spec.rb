@@ -15,8 +15,13 @@ describe Nexaas::Throttle::Guardian do
 
   describe "#throttle!" do
     context "web request" do
-      it "returns nil with an asset request" do
+      it "returns nil with an asset path" do
         allow(request).to receive(:path).and_return("/assets")
+        expect(guardian.throttle!).to be_nil
+      end
+
+      it "returns nil with an asset related path" do
+        allow(request).to receive(:path).and_return("/something/different.js")
         expect(guardian.throttle!).to be_nil
       end
 
@@ -68,8 +73,13 @@ describe Nexaas::Throttle::Guardian do
 
   describe "#track!" do
     context "web request" do
-      it "returns nil with an asset request" do
+      it "returns nil with an asset path" do
         allow(request).to receive(:path).and_return("/assets")
+        expect(guardian.track!).to be_nil
+      end
+
+      it "returns nil with an asset related path" do
+        allow(request).to receive(:path).and_return("/something/different.js")
         expect(guardian.track!).to be_nil
       end
 

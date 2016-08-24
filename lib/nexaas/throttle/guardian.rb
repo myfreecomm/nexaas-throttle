@@ -27,12 +27,20 @@ module Nexaas
       end
 
       def assets?
-        request.path.start_with?("/assets")
+        path = request.path
+        path.match(/\/assets/).present? || path.match(extensions_regexp).present?
       end
 
       def api?
         content_type = (request.media_type || request.env["Content-Type"]).to_s
         %w(application/json application/xml).include?(content_type)
+      end
+
+      def extensions_regexp
+        @assets_extensions ||= begin
+          extensions = %w(css js png jpg gif)
+          /\.(#{extensions.join("|")})/
+        end
       end
     end
   end
