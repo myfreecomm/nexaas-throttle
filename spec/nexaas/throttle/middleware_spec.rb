@@ -47,10 +47,35 @@ describe Nexaas::Throttle::Middleware do
       end
 
       context "when not throttleable" do
-        it "does not add throttle requests" do
+        let(:throttler) { double("throttler", inc: true) }
+
+        before do
           configuration.throttle = false
+
+          ActiveSupport::Notifications.subscribe("rack.attack") do |_, _, _, _, request|
+            if request.env["rack.attack.matched"] == "nexaas/throttle" && request.env["rack.attack.match_type"] == :throttle
+              throttler.inc
+            end
+          end
+        end
+
+        after do
+          ActiveSupport::Notifications.unsubscribe("rack.attack")
+        end
+
+        it "does not throttle requests" do
           3.times { get "/hello/world", {}, "Content-Type" => "application/json" }
           expect(last_response.status).to eq(200)
+        end
+
+        it "notifies about throttling" do
+          3.times { get "/hello/world", {}, "Content-Type" => "application/json" }
+          expect(throttler).to have_received(:inc).once
+        end
+
+        it "does not notify if throttle is not triggered" do
+          2.times { get "/hello/world", {}, "Content-Type" => "application/json" }
+          expect(throttler).not_to have_received(:inc)
         end
       end
     end
@@ -85,7 +110,7 @@ describe Nexaas::Throttle::Middleware do
       end
 
       context "when not throttleable" do
-        it "does not add throttle requests" do
+        it "does not throttle requests" do
           configuration.throttle = false
           3.times { get "/hello/world", {}, "Content-Type" => "application/xml" }
           expect(last_response.status).to eq(200)
@@ -114,7 +139,7 @@ describe Nexaas::Throttle::Middleware do
   end
 
   describe "nexaas/track" do
-    let(:counter) { double("counter", inc: true) }
+    let(:tracker) { double("tracker", inc: true) }
 
     before do
       configuration.track = true
@@ -122,16 +147,20 @@ describe Nexaas::Throttle::Middleware do
 
       ActiveSupport::Notifications.subscribe("rack.attack") do |_, _, _, _, request|
         if request.env["rack.attack.matched"] == "nexaas/track" && request.env["rack.attack.match_type"] == :track
-          counter.inc
+          tracker.inc
         end
       end
+    end
+
+    after do
+      ActiveSupport::Notifications.unsubscribe("rack.attack")
     end
 
     context "json" do
       context "when trackable" do
         it "tracks json requests" do
           3.times { get "/hello/world", {}, "Content-Type" => "application/json" }
-          expect(counter).to have_received(:inc).exactly(3).times
+          expect(tracker).to have_received(:inc).exactly(3).times
         end
       end
 
@@ -139,7 +168,7 @@ describe Nexaas::Throttle::Middleware do
         it "does not track requests" do
           configuration.track = false
           3.times { get "/hello/world", {}, "Content-Type" => "application/json" }
-          expect(counter).not_to have_received(:inc)
+          expect(tracker).not_to have_received(:inc)
         end
       end
     end
@@ -148,7 +177,7 @@ describe Nexaas::Throttle::Middleware do
       context "when trackable" do
         it "tracks xml requests" do
           3.times { get "/hello/world", {}, "Content-Type" => "application/xml" }
-          expect(counter).to have_received(:inc).exactly(3).times
+          expect(tracker).to have_received(:inc).exactly(3).times
         end
       end
 
@@ -156,7 +185,7 @@ describe Nexaas::Throttle::Middleware do
         it "does not track requests" do
           configuration.track = false
           3.times { get "/hello/world", {}, "Content-Type" => "application/xml" }
-          expect(counter).not_to have_received(:inc)
+          expect(tracker).not_to have_received(:inc)
         end
       end
     end
@@ -164,14 +193,14 @@ describe Nexaas::Throttle::Middleware do
     context "web" do
       it "does not track web requests" do
         3.times { get "/hello/world" }
-        expect(counter).not_to have_received(:inc)
+        expect(tracker).not_to have_received(:inc)
       end
     end
 
     context "assets" do
       it "does not track assets requests paths" do
         3.times { get "/assets/image.png" }
-        expect(counter).not_to have_received(:inc)
+        expect(tracker).not_to have_received(:inc)
       end
 
       it "does not throttle assets requests files" do
