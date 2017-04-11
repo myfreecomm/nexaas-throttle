@@ -32,6 +32,10 @@ describe Nexaas::Throttle::Configuration do
         namespace: "nexaas:throttle"
       )
     end
+
+    it "initializes @ignored_user_agents" do
+      expect(configuration.ignored_user_agents).to be_nil
+    end
   end
 
   describe "#throttleable?" do

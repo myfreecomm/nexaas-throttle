@@ -91,6 +91,11 @@ end
       </pre>
     </td>
   </tr>
+  <tr>
+    <td><code>ignored_user_agents</code></td>
+    <td>Ignores how many User-Agent the application wants, in case of other applications from the same organization.</td>
+    <td><code>nil</code></td>
+  </tr>
 </table>
 
 ### Request Identification
@@ -145,4 +150,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/myfree
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-

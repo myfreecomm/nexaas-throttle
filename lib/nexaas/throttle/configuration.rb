@@ -37,6 +37,11 @@ module Nexaas
       # @return [Hash]
       attr_reader :redis_options
 
+      # Ignores how many User-Agent the application wants, in case of other applications from the same organization.
+      # Example: ["Google", "Amazons"]
+      # @return [Array]
+      attr_accessor :ignored_user_agents
+
       alias_method :throttleable?, :throttle
       alias_method :trackable?, :track
 
@@ -47,6 +52,7 @@ module Nexaas
         @limit = 60
         @request_identifier = nil
         @redis_options = default_redis_options
+        @ignored_user_agents = nil
       end
 
       def check!

@@ -4,7 +4,8 @@ describe Nexaas::Throttle::Guardian do
   let(:request) { double("Request", env: {}) }
   let(:request_identifier_klass) { class_double("RequestIdentifier") }
   let(:request_identifier_instance) { double("RequestIdentifier") }
-  let(:guardian) { described_class.new(request, request_identifier_klass) }
+  let(:configuration) { double(request_identifier: request_identifier_klass, ignored_user_agents: nil) }
+  let(:guardian) { described_class.new(request, configuration) }
 
   before do
     allow(request_identifier_klass).to receive(:new).
@@ -14,6 +15,12 @@ describe Nexaas::Throttle::Guardian do
   end
 
   describe "#throttle!" do
+    it "ignored with specific User-Agent request" do
+        allow(request).to receive(:user_agent).and_return("Google")
+        allow(configuration).to receive(:ignored_user_agents).and_return(["Google"])
+        expect(guardian.throttle!).to be_nil
+    end
+
     context "web request" do
       it "returns nil with an asset path" do
         allow(request).to receive(:path).and_return("/assets")
@@ -72,6 +79,12 @@ describe Nexaas::Throttle::Guardian do
   end
 
   describe "#track!" do
+    it "ignored with specific User-Agent request" do
+        allow(request).to receive(:user_agent).and_return("Google")
+        allow(configuration).to receive(:ignored_user_agents).and_return(["Google"])
+        expect(guardian.track!).to be_nil
+    end
+
     context "web request" do
       it "returns nil with an asset path" do
         allow(request).to receive(:path).and_return("/assets")
