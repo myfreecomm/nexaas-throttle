@@ -41,6 +41,7 @@ Nexaas::Throttle.configure do |config|
     db: 0,
     namespace: "nexaas:throttle"
   }
+  config.ignored_user_agents = ["Google"]
 end
 ```
 
