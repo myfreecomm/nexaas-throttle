@@ -3,9 +3,10 @@ require "base64"
 module Nexaas
   module Throttle
     class Guardian
-      def initialize(request, request_identifier)
+      def initialize(request, configuration)
         @request = request
-        @token = request_identifier.new(request).token
+        @token = configuration.request_identifier.new(request).token
+        @ignored_user_agents = configuration.ignored_user_agents
       end
 
       def throttle!
@@ -18,10 +19,10 @@ module Nexaas
 
       private
 
-      attr_reader :request, :token
+      attr_reader :request, :token, :ignored_user_agents
 
       def validate
-        return if assets? || !api? || token.blank?
+        return if ignore_user_agents? || assets? || !api? || token.blank?
         request.env["nexaas.token"] = token
         yield if block_given?
       end
@@ -41,6 +42,10 @@ module Nexaas
           extensions = %w(css js png jpg gif)
           /\.(#{extensions.join("|")})/
         end
+      end
+
+      def ignore_user_agents?
+        ignored_user_agents && ignored_user_agents.include?(request.user_agent)
       end
     end
   end

@@ -8,7 +8,7 @@ module Rack
     end
 
     def self.guardian(request)
-      Nexaas::Throttle::Guardian.new(request, configuration.request_identifier)
+      Nexaas::Throttle::Guardian.new(request, configuration)
     end
 
     def self.throttled?(req)
