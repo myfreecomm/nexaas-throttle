@@ -45,7 +45,7 @@ module Nexaas
       end
 
       def ignore_user_agents?
-        ignored_user_agents && ignored_user_agents.include?(request.user_agent)
+        ignored_user_agents && !ignored_user_agents.map { |regexp| regexp.match(request.user_agent) }.compact.blank?
       end
     end
   end
