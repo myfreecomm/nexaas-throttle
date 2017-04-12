@@ -16,8 +16,8 @@ describe Nexaas::Throttle::Guardian do
 
   describe "#throttle!" do
     it "ignored with specific User-Agent request" do
-        allow(request).to receive(:user_agent).and_return("Google")
-        allow(configuration).to receive(:ignored_user_agents).and_return(["Google"])
+        allow(request).to receive(:user_agent).and_return("Google v1.0")
+        allow(configuration).to receive(:ignored_user_agents).and_return([/[Gg]oogle/])
         expect(guardian.throttle!).to be_nil
     end
 
@@ -80,8 +80,8 @@ describe Nexaas::Throttle::Guardian do
 
   describe "#track!" do
     it "ignored with specific User-Agent request" do
-        allow(request).to receive(:user_agent).and_return("Google")
-        allow(configuration).to receive(:ignored_user_agents).and_return(["Google"])
+        allow(request).to receive(:user_agent).and_return("Google v1.0")
+        allow(configuration).to receive(:ignored_user_agents).and_return([/[Gg]oogle/])
         expect(guardian.track!).to be_nil
     end
 

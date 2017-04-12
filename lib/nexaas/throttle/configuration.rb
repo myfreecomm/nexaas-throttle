@@ -38,7 +38,7 @@ module Nexaas
       attr_reader :redis_options
 
       # Ignores how many User-Agent the application wants, in case of other applications from the same organization.
-      # Example: ["Google", "Amazons"]
+      # Example: [/[Gg]oogle/, /Amazon/]
       # @return [Array]
       attr_accessor :ignored_user_agents
 
