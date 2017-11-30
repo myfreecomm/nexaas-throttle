@@ -22,7 +22,7 @@ module Nexaas
       attr_reader :request, :token, :ignored_user_agents
 
       def validate
-        return if ignore_user_agents? || assets? || !api? || token.blank?
+        return if ignore_user_agents? || assets? || token.blank?
         request.env["nexaas.token"] = token
         yield if block_given?
       end
@@ -30,11 +30,6 @@ module Nexaas
       def assets?
         path = request.path
         path.match(/\/assets/).present? || path.match(extensions_regexp).present?
-      end
-
-      def api?
-        content_type = (request.media_type || request.env["Content-Type"]).to_s
-        %w(application/json application/xml).include?(content_type)
       end
 
       def extensions_regexp
