@@ -41,7 +41,7 @@ describe Nexaas::Throttle::Guardian do
 
     context "json request" do
       before do
-        allow(request).to receive(:path).and_return("a/json/request")
+        allow(request).to receive(:path).and_return("/resource.json")
         allow(request).to receive(:media_type).and_return("application/json")
       end
 
@@ -57,7 +57,7 @@ describe Nexaas::Throttle::Guardian do
 
     context "xml request" do
       before do
-        allow(request).to receive(:path).and_return("a/xml/request")
+        allow(request).to receive(:path).and_return("/resource.xml")
         allow(request).to receive(:media_type).and_return("application/xml")
       end
 
@@ -74,9 +74,9 @@ describe Nexaas::Throttle::Guardian do
 
   describe "#track!" do
     it "ignored with specific User-Agent request" do
-        allow(request).to receive(:user_agent).and_return("Google v1.0")
-        allow(configuration).to receive(:ignored_user_agents).and_return([/[Gg]oogle/])
-        expect(guardian.track!).to be_nil
+      allow(request).to receive(:user_agent).and_return("Google v1.0")
+      allow(configuration).to receive(:ignored_user_agents).and_return([/[Gg]oogle/])
+      expect(guardian.track!).to be_nil
     end
 
     context "web request" do
