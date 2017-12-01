@@ -32,6 +32,21 @@ describe Nexaas::Throttle::Guardian do
         expect(guardian.throttle!).to be_nil
       end
 
+      it "returns nil with an asset related path with a single url parameter" do
+        allow(request).to receive(:path).and_return("/something/different.js?myparam=something")
+        expect(guardian.throttle!).to be_nil
+      end
+
+      it "returns nil with an asset related path with multiple url parameters" do
+        allow(request).to receive(:path).and_return("/something/different.js?myparam=something&foo=bar")
+        expect(guardian.throttle!).to be_nil
+      end
+
+      it "returns nil with an asset related path with simple url parameters" do
+        allow(request).to receive(:path).and_return("/something/different.js?something")
+        expect(guardian.throttle!).to be_nil
+      end
+
       it "does not inject token" do
         allow(request).to receive(:path).and_return("/assets")
         guardian.throttle!
@@ -87,6 +102,21 @@ describe Nexaas::Throttle::Guardian do
 
       it "returns nil with an asset related path" do
         allow(request).to receive(:path).and_return("/something/different.js")
+        expect(guardian.track!).to be_nil
+      end
+
+      it "returns nil with an asset related path with a single url parameter" do
+        allow(request).to receive(:path).and_return("/something/different.js?myparam=something")
+        expect(guardian.track!).to be_nil
+      end
+
+      it "returns nil with an asset related path with multiple url parameters" do
+        allow(request).to receive(:path).and_return("/something/different.js?myparam=something&foo=bar")
+        expect(guardian.track!).to be_nil
+      end
+
+      it "returns nil with an asset related path with a simple url parameter" do
+        allow(request).to receive(:path).and_return("/something/different.js?something")
         expect(guardian.track!).to be_nil
       end
 
