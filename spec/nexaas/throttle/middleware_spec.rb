@@ -118,13 +118,6 @@ describe Nexaas::Throttle::Middleware do
       end
     end
 
-    context "web" do
-      it "does not throttle web requests" do
-        3.times { get "/hello/world" }
-        expect(last_response.status).not_to eq(429)
-      end
-    end
-
     context "assets" do
       it "does not throttle assets requests paths" do
         3.times { get "/assets/image.png" }
@@ -187,13 +180,6 @@ describe Nexaas::Throttle::Middleware do
           3.times { get "/hello/world", {}, "Content-Type" => "application/xml" }
           expect(tracker).not_to have_received(:inc)
         end
-      end
-    end
-
-    context "web" do
-      it "does not track web requests" do
-        3.times { get "/hello/world" }
-        expect(tracker).not_to have_received(:inc)
       end
     end
 

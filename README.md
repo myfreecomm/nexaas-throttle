@@ -104,6 +104,8 @@ end
 `Nexaas::Throttle` doesn't know how to identify a consumer. Some applications might rely on request IP, others on an API TOKEN. You must provide a way of getting an unique token
 that identify a request consumer.
 
+If there is no token, the request will go through and won't be accounted for.
+
 `Nexaas::Throttle` do this by providing a configuration `request_identifier`, a class where your application would keep the logic that identifies a consumer. This class must have the following
 interface:
 

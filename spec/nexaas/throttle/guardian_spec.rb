@@ -16,9 +16,9 @@ describe Nexaas::Throttle::Guardian do
 
   describe "#throttle!" do
     it "ignored with specific User-Agent request" do
-        allow(request).to receive(:user_agent).and_return("Google v1.0")
-        allow(configuration).to receive(:ignored_user_agents).and_return([/[Gg]oogle/])
-        expect(guardian.throttle!).to be_nil
+      allow(request).to receive(:user_agent).and_return("Google v1.0")
+      allow(configuration).to receive(:ignored_user_agents).and_return([/[Gg]oogle/])
+      expect(guardian.throttle!).to be_nil
     end
 
     context "web request" do
@@ -29,12 +29,6 @@ describe Nexaas::Throttle::Guardian do
 
       it "returns nil with an asset related path" do
         allow(request).to receive(:path).and_return("/something/different.js")
-        expect(guardian.throttle!).to be_nil
-      end
-
-      it "returns nil with non api request" do
-        allow(request).to receive(:path).and_return("a/web/request")
-        allow(request).to receive(:media_type).and_return("text/html")
         expect(guardian.throttle!).to be_nil
       end
 
@@ -93,12 +87,6 @@ describe Nexaas::Throttle::Guardian do
 
       it "returns nil with an asset related path" do
         allow(request).to receive(:path).and_return("/something/different.js")
-        expect(guardian.track!).to be_nil
-      end
-
-      it "returns nil with non api request" do
-        allow(request).to receive(:path).and_return("a/web/request")
-        allow(request).to receive(:media_type).and_return("text/html")
         expect(guardian.track!).to be_nil
       end
 
