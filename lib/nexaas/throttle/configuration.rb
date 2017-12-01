@@ -37,7 +37,8 @@ module Nexaas
       # @return [Hash]
       attr_reader :redis_options
 
-      # Ignores how many User-Agent the application wants, in case of other applications from the same organization.
+      # An array of User Agents that should be ignored by the throttler.
+      # Values are regexes that will be matched against the request User-Agent.
       # Example: [/[Gg]oogle/, /Amazon/]
       # @return [Array]
       attr_accessor :ignored_user_agents
