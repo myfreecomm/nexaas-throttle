@@ -95,7 +95,6 @@ end
   <tr>
     <td><code>ignored_user_agents</code></td>
     <td>An array of User Agents that should be ignored by the throttler. Values are regexes that will be matched against the request User-Agent</td>
-    <td>Ignores how many User-Agent the application wants, in case of other applications from the same organization.</td>
     <td><code>nil</code></td>
   </tr>
 </table>
