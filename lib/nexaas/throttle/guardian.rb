@@ -29,14 +29,14 @@ module Nexaas
 
       def assets?
         path = request.path
-        path.match(/\/assets/).present? || path.match(extensions_regexp).present?
+        path.match(%r{/assets}).present? || path.match(extensions_regexp).present?
       end
 
       def extensions_regexp
         @assets_extensions ||= begin
-          extensions = %w(css js png jpg gif)
-          /\.(#{extensions.join("|")})/
-        end
+                                 extensions_group = %w(css js png jpg gif).join("|")
+                                 /\.(#{extensions_group})(\?\S*)?$/
+                               end
       end
 
       def ignore_user_agents?
