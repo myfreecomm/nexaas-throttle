@@ -139,6 +139,16 @@ end
 
 If you want, you can access the request token by inspecting `request.env["nexaas.token"]`. This is the token your `request_identifier` provided after evaluating the request.
 
+### Response headers
+
+Rate limit headers are available for all request responses and provide information for API users. They are the following:
+
+```ruby
+"X-RateLimit-Limit"     # Total of requests allowed until next reset.
+"X-RateLimit-Remaining" # Amount of requests the user can still send before being throttled.
+"X-RateLimit-Reset"     # Epoch time for the reset of the request count.
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
