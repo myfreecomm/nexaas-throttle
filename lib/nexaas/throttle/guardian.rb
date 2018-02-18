@@ -22,21 +22,19 @@ module Nexaas
       attr_reader :request, :token, :ignored_user_agents
 
       def validate
-        return if ignore_user_agents? || assets? || token.blank?
+        return if ignore_user_agents? || asset_request? || token.blank?
         request.env["nexaas.token"] = token
         yield if block_given?
       end
 
-      def assets?
+      def asset_request?
         path = request.path
-        path.match(%r{/assets}).present? || path.match(extensions_regexp).present?
+        path.match(%r{/assets}).present? || path.match(assets_extensions_regexp).present?
       end
 
-      def extensions_regexp
-        @assets_extensions ||= begin
-                                 extensions_group = %w(css js png jpg gif).join("|")
-                                 /\.(#{extensions_group})(\?\S*)?$/
-                               end
+      def assets_extensions_regexp
+        extensions_group = %w(css js png jpg gif).join("|")
+        /\.(#{extensions_group})$/
       end
 
       def ignore_user_agents?
