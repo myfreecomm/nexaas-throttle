@@ -34,7 +34,7 @@ module Nexaas
 
       def assets_extensions_regexp
         @assets_extensions_regexp ||= begin
-                                        extensions_group = %w(css js png jpg gif).join("|")
+                                        extensions_group = "css|js|png|jpg|gif"
                                         /\.(#{extensions_group})$/
                                       end
       end
