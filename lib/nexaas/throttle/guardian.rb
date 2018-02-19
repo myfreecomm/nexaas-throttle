@@ -33,8 +33,10 @@ module Nexaas
       end
 
       def assets_extensions_regexp
-        extensions_group = %w(css js png jpg gif).join("|")
-        /\.(#{extensions_group})$/
+        @assets_extensions_regexp ||= begin
+                                        extensions_group = %w(css js png jpg gif).join("|")
+                                        /\.(#{extensions_group})$/
+                                      end
       end
 
       def ignore_user_agents?
