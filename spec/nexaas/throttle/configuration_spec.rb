@@ -36,6 +36,10 @@ describe Nexaas::Throttle::Configuration do
     it "initializes @ignored_user_agents" do
       expect(configuration.ignored_user_agents).to be_nil
     end
+
+    it "initializes @assets_extensions" do
+      expect(configuration.assets_extensions).to eq(%w[css js jpg jpeg png gif woff ttf svg])
+    end
   end
 
   describe "#throttleable?" do

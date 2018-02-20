@@ -4,7 +4,11 @@ describe Nexaas::Throttle::Guardian do
   let(:request) { double("Request", env: {}) }
   let(:request_identifier_klass) { class_double("RequestIdentifier") }
   let(:request_identifier_instance) { double("RequestIdentifier") }
-  let(:configuration) { double(request_identifier: request_identifier_klass, ignored_user_agents: nil) }
+  let(:configuration) do
+    double(request_identifier: request_identifier_klass,
+           ignored_user_agents: nil,
+           assets_extensions: %w[css js jpg png])
+  end
   let(:guardian) { described_class.new(request, configuration) }
 
   before do

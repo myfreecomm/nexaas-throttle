@@ -42,6 +42,7 @@ Nexaas::Throttle.configure do |config|
     namespace: "nexaas:throttle"
   }
   config.ignored_user_agents = [/[Gg]oogle/, /Amazon/]
+  config.assets_extensions = %w[bmp tiff css js jpg jpeg png gif woff ttf svg]
 end
 ```
 
@@ -96,6 +97,11 @@ end
     <td><code>ignored_user_agents</code></td>
     <td>An array of User Agents that should be ignored by the throttler. Values are regexes that will be matched against the request User-Agent</td>
     <td><code>nil</code></td>
+  </tr>
+  <tr>
+    <td><code>assets_extensions</code></td>
+    <td>An array of file extensions considered to be asset-related.  Values are strings that will be matched against the request path.  Paths that match will be not be throttled</td>
+    <td><code>%w[css js jpg jpeg png gif woff ttf svg]</code></td>
   </tr>
 </table>
 

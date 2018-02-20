@@ -7,6 +7,7 @@ module Nexaas
         @request = request
         @token = configuration.request_identifier.new(request).token
         @ignored_user_agents = configuration.ignored_user_agents
+        @assets_extensions = configuration.assets_extensions
       end
 
       def throttle!
@@ -19,7 +20,7 @@ module Nexaas
 
       private
 
-      attr_reader :request, :token, :ignored_user_agents
+      attr_reader :request, :token, :ignored_user_agents, :assets_extensions
 
       def validate
         return if ignore_user_agents? || asset_request? || token.blank?
@@ -33,10 +34,8 @@ module Nexaas
       end
 
       def assets_extensions_regexp
-        @assets_extensions_regexp ||= begin
-                                        extensions_group = "css|js|png|jpg|gif"
-                                        /\.(#{extensions_group})$/
-                                      end
+        extensions = assets_extensions.join("|")
+        /\.(#{extensions})$/
       end
 
       def ignore_user_agents?
