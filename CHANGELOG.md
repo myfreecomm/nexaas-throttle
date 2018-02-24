@@ -1,3 +1,6 @@
+### v2.0.2
+- Stop checking for query string in request#path. [#10](https://github.com/myfreecomm/nexaas-throttle/pull/10)
+- Add information on README regarding X-RateLimit headers. [#9](https://github.com/myfreecomm/nexaas-throttle/pull/9)
 ### v2.0.1
 - Fix regex matching when checking if a given request is asset-related. [#7](https://github.com/myfreecomm/nexaas-throttle/pull/7)
 ## v2.0
