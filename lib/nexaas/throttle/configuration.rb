@@ -43,6 +43,13 @@ module Nexaas
       # @return [Array]
       attr_accessor :ignored_user_agents
 
+      # An array of file extensions considered to be asset-related.
+      # Values are strings that will be matched against the request path.
+      # Paths that match will be not be throttled.
+      # Example: ["css", "js", "jpeg", "jpg", "png"]
+      # @return [Array]
+      attr_accessor :assets_extensions
+
       alias_method :throttleable?, :throttle
       alias_method :trackable?, :track
 
@@ -54,6 +61,7 @@ module Nexaas
         @request_identifier = nil
         @redis_options = default_redis_options
         @ignored_user_agents = nil
+        @assets_extensions = %w[css js jpg jpeg png gif woff ttf svg]
       end
 
       def check!

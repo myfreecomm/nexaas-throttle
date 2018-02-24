@@ -4,7 +4,11 @@ describe Nexaas::Throttle::Guardian do
   let(:request) { double("Request", env: {}) }
   let(:request_identifier_klass) { class_double("RequestIdentifier") }
   let(:request_identifier_instance) { double("RequestIdentifier") }
-  let(:configuration) { double(request_identifier: request_identifier_klass, ignored_user_agents: nil) }
+  let(:configuration) do
+    double(request_identifier: request_identifier_klass,
+           ignored_user_agents: nil,
+           assets_extensions: %w[css js jpg png])
+  end
   let(:guardian) { described_class.new(request, configuration) }
 
   before do
@@ -32,18 +36,9 @@ describe Nexaas::Throttle::Guardian do
         expect(guardian.throttle!).to be_nil
       end
 
-      it "returns nil with an asset related path with a single url parameter" do
-        allow(request).to receive(:path).and_return("/something/different.js?myparam=something")
-        expect(guardian.throttle!).to be_nil
-      end
-
-      it "returns nil with an asset related path with multiple url parameters" do
-        allow(request).to receive(:path).and_return("/something/different.js?myparam=something&foo=bar")
-        expect(guardian.throttle!).to be_nil
-      end
-
-      it "returns nil with an asset related path with simple url parameters" do
-        allow(request).to receive(:path).and_return("/something/different.js?something")
+      it "returns nil with an asset related path with a query string" do
+        allow(request).to receive(:query_string).and_return("myparam=something")
+        allow(request).to receive(:path).and_return("/something/different.js")
         expect(guardian.throttle!).to be_nil
       end
 
@@ -105,18 +100,9 @@ describe Nexaas::Throttle::Guardian do
         expect(guardian.track!).to be_nil
       end
 
-      it "returns nil with an asset related path with a single url parameter" do
-        allow(request).to receive(:path).and_return("/something/different.js?myparam=something")
-        expect(guardian.track!).to be_nil
-      end
-
-      it "returns nil with an asset related path with multiple url parameters" do
-        allow(request).to receive(:path).and_return("/something/different.js?myparam=something&foo=bar")
-        expect(guardian.track!).to be_nil
-      end
-
-      it "returns nil with an asset related path with a simple url parameter" do
-        allow(request).to receive(:path).and_return("/something/different.js?something")
+      it "returns nil with an asset related path with a query string" do
+        allow(request).to receive(:query_string).and_return("myparam=something")
+        allow(request).to receive(:path).and_return("/something/different.js")
         expect(guardian.track!).to be_nil
       end
 
